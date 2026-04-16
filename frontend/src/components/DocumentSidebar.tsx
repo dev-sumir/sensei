@@ -78,6 +78,16 @@ export function DocumentSidebar({
           </div>
         ))}
       </div>
+
+      <footer style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid var(--border)', textAlign: 'center', color: 'var(--text)', fontSize: '12px', opacity: 0.7 }}>
+        <p style={{ margin: 0, letterSpacing: '0.5px' }}>
+          Designed & Built by <strong>Sumir Malhotra</strong>
+        </p>
+        <div style={{ marginTop: '6px', display: 'flex', gap: '12px', justifyContent: 'center' }}>
+          <a href="https://github.com/dev-sumir" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>GitHub</a>
+          <a href="https://www.linkedin.com/in/sumir-malhotra/" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'underline' }}>LinkedIn</a>
+        </div>
+      </footer>
     </aside>
   )
 }
