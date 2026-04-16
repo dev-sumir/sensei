@@ -8,11 +8,10 @@ import {
   getCurrentUser,
   getDocumentHistory,
   listDocuments,
-  sendMessage,
   uploadDocument,
   deleteDocument,
 } from './lib/api'
-import { storageBucket, supabase } from './lib/supabase'
+import { supabase } from './lib/supabase'
 import type { ChatMessage, DocumentSummary, User } from './types'
 
 function App() {
