@@ -54,9 +54,11 @@ h3 {
 }
 
 h1 {
-  font-size: 56px;
+  font-size: clamp(32px, 8vw, 56px);
+  line-height: 1.2;
   letter-spacing: -1.68px;
   margin: 0;
+  padding-bottom: 4px; /* Prevents descender clipping */
   background: linear-gradient(to right, #fff, #9ca3af);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
