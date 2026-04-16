@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --text: #9ca3af;
+  --text-h: #f9fafb;
+  --bg: #050505;
+  --border: rgba(255, 255, 255, 0.08);
+  --code-bg: #111113;
+  --accent: #00f0ff;
+  --accent-glow: rgba(0, 240, 255, 0.5);
+  --accent-bg: rgba(0, 240, 255, 0.05);
+  --accent-border: rgba(0, 240, 255, 0.3);
+  --social-bg: rgba(255, 255, 255, 0.03);
+  --surface-soft: rgba(255, 255, 255, 0.02);
+  --shadow:
+    rgba(0, 0, 0, 0.8) 0 20px 35px -20px,
+    rgba(0, 240, 255, 0.05) 0 0 20px 0;
+
+  --sans: 'Outfit', 'Inter', system-ui, sans-serif;
+  --heading: 'Space Grotesk', 'Outfit', system-ui, sans-serif;
+  --mono: 'Fira Code', ui-monospace, Consolas, monospace;
+
+  font: 15px/160% var(--sans);
+  letter-spacing: 0.2px;
+  color-scheme: dark;
+  color: var(--text);
+  background: var(--bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 15% 50%, rgba(0, 240, 255, 0.08), transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 45%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--heading);
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+h1 {
+  font-size: 56px;
+  letter-spacing: -1.68px;
+  margin: 0;
+  background: linear-gradient(to right, #fff, #9ca3af);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+h2,
+h3 {
+  font-size: 24px;
+  letter-spacing: -0.24px;
+  margin: 0;
+}
+p {
+  margin: 0;
+}
+
+code {
+  font-family: var(--mono);
+  display: inline-flex;
+  border-radius: 6px;
+  color: #e5e7eb;
+  font-size: 14px;
+  padding: 4px 8px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  outline: none;
+}
+
+button {
+  border: 1px solid var(--accent-border);
+  border-radius: 12px;
+  padding: 12px 20px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 13px;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: rgba(0, 240, 255, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  border-color: var(--border);
+  color: var(--text);
+  box-shadow: none;
+}
+
+button.secondary {
+  background: var(--surface-soft);
+  color: var(--text-h);
+  border-color: var(--border);
+  box-shadow: none;
+}
+button.secondary:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: none;
+}
+
+input,
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-h);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6b7280;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: text-shadow 0.2s ease;
+}
+a:hover {
+  text-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 14px;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+@media (max-width: 768px) {
+  :root { font-size: 14px; }
+  h1 { font-size: 32px; }
+  h2, h3 { font-size: 20px; }
+}

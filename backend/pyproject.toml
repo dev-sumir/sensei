@@ -1,0 +1,27 @@
+[project]
+name = "sensie-backend"
+version = "0.1.0"
+description = "FastAPI backend for the Sensie PDF chat app"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "python-dotenv",
+  "httpx",
+  "pydantic",
+  "pydantic-settings",
+  "python-multipart",
+  "pypdf",
+  "numpy",
+  "pgvector",
+  "asyncpg",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx[cli]"]
+
+[tool.uvicorn]
+factory = false
+host = "0.0.0.0"
+port = 8000
+
