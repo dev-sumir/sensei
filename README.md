@@ -1,5 +1,7 @@
 # Sensie 🧠
 
+**🚀 Live Demo: [https://sensei-woad.vercel.app/](https://sensei-woad.vercel.app/)**
+
 Sensie is a professional, high-performance AI workspace designed to help you interact with, query, and extract insights from your PDF documents seamlessly. Built with a modern, 100vh sliding-panel architecture and powered by **Google Gemini 2.5 Flash**, it delivers a deeply immersive and premium document-chat experience.
 
 ## ✨ Features
