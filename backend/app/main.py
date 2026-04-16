@@ -9,9 +9,19 @@ def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(title="Sensie Backend", version="0.1.0")
 
+    raw_origins = settings.frontend_url.split(",")
+    origins = [
+        origin.strip().rstrip("/")
+        for origin in raw_origins
+        if origin.strip() and origin.strip() != "*"
+    ]
+    if "http://localhost:5173" not in origins:
+        origins.append("http://localhost:5173")
+
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=[settings.frontend_url],
+        allow_origins=origins,
+        allow_origin_regex=r"https://.*\.vercel\.app",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
