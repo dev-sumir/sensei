@@ -24,7 +24,12 @@ async def get_pool() -> asyncpg.Pool:
     if _pool is not None:
         return _pool
     settings = get_db_settings()
-    _pool = await asyncpg.create_pool(dsn=settings.url, min_size=1, max_size=5)
+    _pool = await asyncpg.create_pool(
+        dsn=settings.url,
+        min_size=1,
+        max_size=5,
+        statement_cache_size=0,
+    )
     return _pool
 
 
