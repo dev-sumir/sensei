@@ -8,3 +8,5 @@ backend/tests/__pycache__/
 .env
 *.pyc
 
+# IDEs
+.cursor/

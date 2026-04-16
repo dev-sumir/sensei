@@ -1,109 +1,54 @@
-# sensie
+# Sensie 🧠
 
-`sensie` is a full-stack PDF explainer app with a React frontend and a FastAPI backend. Users sign in with Google or GitHub via Supabase, upload PDFs, and chat with one active PDF at a time while keeping previous PDFs and chat history available after login.
+Sensie is a professional, high-performance AI workspace designed to help you interact with, query, and extract insights from your PDF documents seamlessly. Built with a modern, 100vh sliding-panel architecture and powered by **Google Gemini 2.5 Flash**, it delivers a deeply immersive and premium document-chat experience.
 
-## Stack
+## ✨ Features
 
-- Frontend: React + Vite + TypeScript
-- Backend: FastAPI + asyncpg
-- Auth, storage, and database: Supabase
-- Embeddings and answers: Gemini API
-- Retrieval: Supabase Postgres + `pgvector`
+- **Dynamic Workspace Layout:** A modern, scrolling-free 100vh app shell featuring intuitive left and right sliding panels, offering a highly professional desktop aesthetic.
+- **Lightning Fast Optimistic UI:** Chats feel instantaneous. Your messages appear the millisecond you hit Enter, while the AI responds with a smooth, native "Typewriter" effect.
+- **Rich Markdown Rendering:** Sensie understands and beautifully renders complex AI output, including code blocks, bold text, headings, and lists directly in the chat window.
+- **Integrated PDF Preview:** Don't just read the chat. Sensie features a built-in PDF viewer panel that utilizes native "Fit Width" capabilities so you can read along as the AI explains the document.
+- **Smart Quota System:** Includes a built-in Free Tier tracker and backend security layer, limiting users to a pristine set of 5 active conversations to prevent API abuse.
+- **Drag & Drop Upload:** A beautiful, responsive drop zone replaces standard file uploaders, supporting immediate PDF ingest and chunked vector embedding.
 
-## Project Structure
+## 🛠 Tech Stack
 
-- `frontend/`: React app
-- `backend/`: FastAPI app, SQL schema, ingestion and retrieval logic
-- `backend/supabase_schema.sql`: database schema and row-level security policies
+- **Frontend:** React, TypeScript, Vite
+- **Styling:** Vanilla CSS with custom Dark/Neon aesthetics and *Space Grotesk* futuristic typography
+- **Backend:** FastAPI (Python)
+- **AI Models:** 
+  - `gemini-embedding-001` (Document Vectorization)
+  - `gemini-2.5-flash` (Conversational Intelligence)
+- **Database:** Supabase (PostgreSQL pgvector & Secure Storage Buckets)
 
-## Supabase Setup
+## 🚀 Local Setup
 
-1. Create a Supabase project.
-2. Enable Google and GitHub providers in `Authentication > Providers`.
-3. Create a public site URL for local development:
-   - `http://localhost:5173`
-4. Create a storage bucket named `pdfs`.
-5. Run the SQL in `backend/supabase_schema.sql`.
-6. Make sure the `vector` extension is enabled in the database.
+### 1. Clone the repository
+```bash
+git clone https://github.com/dev-sumir/sensei.git
+cd sensei
+```
 
-## Environment Variables
+### 2. Backend Environment
+Navigate to the `backend` directory, install dependencies, and start the FastAPI server:
+```bash
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+*Note: Ensure you create a `.env` file with your `GEMINI_API_KEY`, `SUPABASE_URL`, and `SUPABASE_SERVICE_KEY` before starting.*
+```bash
+uvicorn app.main:app --reload
+```
 
-Copy these example files and fill in real values:
-
-- `frontend/.env.example` -> `frontend/.env`
-- `backend/.env.example` -> `backend/.env`
-
-Frontend variables:
-
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_ANON_KEY`
-- `VITE_API_URL`
-- `VITE_SUPABASE_STORAGE_BUCKET`
-
-Backend variables:
-
-- `SUPABASE_URL`
-- `SUPABASE_ANON_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `SUPABASE_DB_URL`
-- `GEMINI_API_KEY`
-- `FRONTEND_URL`
-- `SUPABASE_STORAGE_BUCKET`
-
-## Run Locally
-
-### Frontend
-
+### 3. Frontend Environment
+Open a new terminal, navigate to the `frontend` directory, and start the React dev server:
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### Backend
-
-Create a Python virtual environment, install dependencies, then start FastAPI:
-
-```bash
-cd backend
-python -m venv .venv
-.venv\Scripts\activate
-pip install -e .
-uvicorn app.main:app --reload
-```
-
-The frontend runs on `http://localhost:5173` and the backend runs on `http://localhost:8000`.
-
-## Main App Flow
-
-1. User signs in with Google or GitHub using Supabase OAuth.
-2. The frontend sends the Supabase bearer token to FastAPI.
-3. FastAPI validates the token with Supabase and syncs the user profile.
-4. User uploads a PDF through the backend.
-5. The backend stores the PDF in Supabase Storage, extracts text, chunks it, embeds it with Gemini, and stores the vectors in Postgres.
-6. Chat requests are scoped to the selected `document_id`.
-7. Messages are saved so the user can reopen the document and continue later.
-
-## Notes
-
-- The app keeps one active PDF selected in the UI at a time.
-- Previous PDFs and chat histories remain accessible from the sidebar.
-- The backend currently uses one persisted conversation per user/document pair.
-
-## Checks
-
-Frontend:
-
-```bash
-cd frontend
-npm run build
-```
-
-Backend:
-
-```bash
-cd backend
-python -m compileall app
-pytest
-```
-
+## 🔒 License
+MIT License.
