@@ -1,3 +1,4 @@
+import asyncio
 from typing import List
 
 import httpx
@@ -16,16 +17,30 @@ class GeminiClient:
         async with httpx.AsyncClient(timeout=60.0) as client:
             embeddings: List[List[float]] = []
             for text in texts:
-                response = await client.post(
-                    "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
-                    params={"key": self.settings.gemini_api_key},
-                    json={
-                        "model": "models/gemini-embedding-001",
-                        "content": {"parts": [{"text": text}]},
-                        "outputDimensionality": 768,
-                    },
-                )
-                response.raise_for_status()
+                max_retries = 3
+                for attempt in range(max_retries):
+                    try:
+                        response = await client.post(
+                            "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent",
+                            params={"key": self.settings.gemini_api_key},
+                            json={
+                                "model": "models/gemini-embedding-001",
+                                "content": {"parts": [{"text": text}]},
+                                "outputDimensionality": 768,
+                            },
+                        )
+                        response.raise_for_status()
+                        break
+                    except httpx.HTTPStatusError as e:
+                        if e.response.status_code in (429, 503, 500) and attempt < max_retries - 1:
+                            await asyncio.sleep(1.0 * (2 ** attempt))
+                            continue
+                        raise
+                    except httpx.RequestError as e:
+                        if attempt < max_retries - 1:
+                            await asyncio.sleep(1.0 * (2 ** attempt))
+                            continue
+                        raise
                 payload = response.json()
                 embeddings.append(payload["embedding"]["values"])
         return embeddings
@@ -52,18 +67,29 @@ class GeminiClient:
             f"Relevant PDF context:\n{context or 'No context was found.'}\n\n"
             f"User question: {question}"
         )
-        try:
-            async with httpx.AsyncClient(timeout=60.0) as client:
-                response = await client.post(
-                    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
-                    params={"key": self.settings.gemini_api_key},
-                    json={"contents": [{"parts": [{"text": prompt}]}]},
-                )
-                response.raise_for_status()
-        except httpx.HTTPStatusError as e:
-            if e.response.status_code == 429:
-                return f"Google API Limit Reached. Details: {e.response.text}"
-            return f"AI Model Error: {e.response.status_code} - {e.response.text}"
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                async with httpx.AsyncClient(timeout=60.0) as client:
+                    response = await client.post(
+                        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
+                        params={"key": self.settings.gemini_api_key},
+                        json={"contents": [{"parts": [{"text": prompt}]}]},
+                    )
+                    response.raise_for_status()
+                    break
+            except httpx.HTTPStatusError as e:
+                if e.response.status_code in (429, 503, 500) and attempt < max_retries - 1:
+                    await asyncio.sleep(1.0 * (2 ** attempt))
+                    continue
+                if e.response.status_code == 429:
+                    return f"Google API Limit Reached. Details: {e.response.text}"
+                return f"AI Model Error: {e.response.status_code} - {e.response.text}"
+            except httpx.RequestError as e:
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(1.0 * (2 ** attempt))
+                    continue
+                return f"AI Network Error: {str(e)}"
         payload = response.json()
         candidates = payload.get("candidates", [])
         if not candidates:
