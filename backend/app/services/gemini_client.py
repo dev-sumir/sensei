@@ -67,29 +67,51 @@ class GeminiClient:
             f"Relevant PDF context:\n{context or 'No context was found.'}\n\n"
             f"User question: {question}"
         )
-        max_retries = 3
-        for attempt in range(max_retries):
-            try:
-                async with httpx.AsyncClient(timeout=60.0) as client:
-                    response = await client.post(
-                        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
-                        params={"key": self.settings.gemini_api_key},
-                        json={"contents": [{"parts": [{"text": prompt}]}]},
-                    )
-                    response.raise_for_status()
-                    break
-            except httpx.HTTPStatusError as e:
-                if e.response.status_code in (429, 503, 500) and attempt < max_retries - 1:
-                    await asyncio.sleep(1.0 * (2 ** attempt))
-                    continue
-                if e.response.status_code == 429:
-                    return f"Google API Limit Reached. Details: {e.response.text}"
-                return f"AI Model Error: {e.response.status_code} - {e.response.text}"
-            except httpx.RequestError as e:
-                if attempt < max_retries - 1:
-                    await asyncio.sleep(1.0 * (2 ** attempt))
-                    continue
-                return f"AI Network Error: {str(e)}"
+        models = [
+            "gemini-2.5-flash",
+            "gemini-2.0-flash",
+            "gemini-1.5-flash"
+        ]
+        
+        response = None
+        last_error = None
+        success = False
+
+        for model_name in models:
+            max_retries = 2
+            for attempt in range(max_retries):
+                try:
+                    async with httpx.AsyncClient(timeout=60.0) as client:
+                        response = await client.post(
+                            f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent",
+                            params={"key": self.settings.gemini_api_key},
+                            json={"contents": [{"parts": [{"text": prompt}]}]},
+                        )
+                        response.raise_for_status()
+                        success = True
+                        break
+                except httpx.HTTPStatusError as e:
+                    last_error = e
+                    if e.response.status_code in (429, 503, 500) and attempt < max_retries - 1:
+                        await asyncio.sleep(1.0 * (2 ** attempt))
+                        continue
+                    break # Break retry loop, try next model
+                except httpx.RequestError as e:
+                    last_error = e
+                    if attempt < max_retries - 1:
+                        await asyncio.sleep(1.0 * (2 ** attempt))
+                        continue
+                    break # Break retry loop, try next model
+            
+            if success:
+                break
+        
+        if not success:
+            if isinstance(last_error, httpx.HTTPStatusError):
+                if last_error.response.status_code == 429:
+                    return f"Google API Limit Reached. Details: {last_error.response.text}"
+                return f"AI Model Error: {last_error.response.status_code} - {last_error.response.text}"
+            return f"AI Network Error: {str(last_error)}"
         payload = response.json()
         candidates = payload.get("candidates", [])
         if not candidates:
