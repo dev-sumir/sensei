@@ -4,6 +4,7 @@ import type { Session } from '@supabase/supabase-js'
 import './App.css'
 import { AppPage } from './pages/AppPage'
 import { AuthPage } from './pages/AuthPage'
+import ParticleBackground from './components/ParticleBackground'
 import {
   getCurrentUser,
   getDocumentHistory,
@@ -230,15 +231,27 @@ function App() {
   }
 
   if (!session) {
-    return <AuthPage loadingProvider={authLoading} onSignIn={handleSignIn} />
+    return (
+      <>
+        <ParticleBackground />
+        <AuthPage loadingProvider={authLoading} onSignIn={handleSignIn} />
+      </>
+    )
   }
 
   if (!user) {
-    return <main className="loading-screen">Loading Sensie...</main>
+    return (
+      <>
+        <ParticleBackground />
+        <main className="loading-screen">Loading Sensie...</main>
+      </>
+    )
   }
 
   return (
-    <AppPage
+    <>
+      <ParticleBackground />
+      <AppPage
       user={user}
       documents={documents}
       activeDocument={activeDocument}
@@ -255,6 +268,7 @@ function App() {
       onDeleteDocument={handleDeleteDocument}
       onNewDocument={handleNewDocument}
     />
+    </>
   )
 }
 

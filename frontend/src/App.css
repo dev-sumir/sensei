@@ -4,6 +4,8 @@
   display: grid;
   place-items: center;
   padding: 24px;
+  position: relative;
+  z-index: 1;
 }
 
 .auth-card,
@@ -52,6 +54,8 @@
   box-sizing: border-box;
   max-width: 1600px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .topbar,
